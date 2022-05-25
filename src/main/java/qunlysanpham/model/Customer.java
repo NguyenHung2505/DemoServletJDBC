@@ -8,6 +8,11 @@ public class Customer {
     public Customer() {
     }
 
+    public Customer(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
     public Customer(int id, String name, int age) {
         this.id = id;
         this.name = name;

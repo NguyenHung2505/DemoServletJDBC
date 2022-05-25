@@ -6,12 +6,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerDAO implements ICustomerDAO{
+public class CustomerDAO implements ICustomerDAO {
+
+    List<Customer> customerList = new ArrayList<>();
 
     public CustomerDAO() {
     }
 
-    protected Connection getConnection() {
+    protected static Connection getConnection() {
         Connection connection = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -26,30 +28,58 @@ public class CustomerDAO implements ICustomerDAO{
         return connection;
     }
 
+
+    @Override
+    public int findIndexByid(int id) {
+        int index = -1;
+
+        for (int i = 0; i < this.customerList.size(); ++i) {
+            if (((Customer) this.customerList.get(i)).getId() == id) {
+                index = i;
+            }
+        }
+
+        return index;
+    }
+
     @Override
     public void add(Customer customer) throws SQLException {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into customer(id,name ,age) value (?,?,?)");) {
+            preparedStatement.setInt(1, customer.getId());
+            preparedStatement.setString(2, customer.getName());
+            preparedStatement.setInt(3, customer.getAge());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
 
+        }
     }
 
     @Override
     public Customer findById(int id) {
-        return null;
+        List<Customer> customers = findAll();
+        Customer customer = new Customer();
+        for (Customer cus: customers
+             ) {
+            if(id == cus.getId()) {
+             customer = cus;
+            }
+        }
+        return customer;
     }
 
     @Override
     public List<Customer> findAll() {
-        List<Customer>customers=new ArrayList<>();
+        List<Customer> customers = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("select *from customer");) {
             System.out.println(preparedStatement);
-            // Step 3: Execute the query or update query
             ResultSet rs = preparedStatement.executeQuery();
-
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 int age = Integer.parseInt(rs.getString("age"));
-                customers.add(new Customer(id,name,age));
+                customers.add(new Customer(id, name, age));
             }
         } catch (SQLException e) {
 
@@ -59,11 +89,26 @@ public class CustomerDAO implements ICustomerDAO{
 
     @Override
     public boolean delete(int id) throws SQLException {
-        return false;
+        boolean  em;
+        try(Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("delete from customer where id=?;")){
+            preparedStatement.setInt(1,id);
+            em = preparedStatement.executeUpdate()>0;
+        }
+        return em;
     }
 
     @Override
-    public boolean update(Customer customer) throws SQLException {
-        return false;
+    public boolean update(Customer customer)throws SQLException {
+        boolean anh;
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = getConnection().prepareStatement("update customer set name = ? , age = ?  where id = ?");) {
+            preparedStatement.setString(1, customer.getName());
+            preparedStatement.setInt(2, customer.getAge());
+            preparedStatement.setInt(3, customer.getId());
+             anh= preparedStatement.executeUpdate()>0;
+        }
+        return anh;
     }
 }
+

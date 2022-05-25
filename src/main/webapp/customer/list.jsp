@@ -15,8 +15,10 @@
 <h1>day la danh sach</h1>
 <a href="/customers?huhi=create">tao moi</a>
 <c:forEach var="cus" items="${dskh}">
-    <h2>${cus.id}, ${cus.name} , ${cus.age}</h2>
+    <h2>${cus.id}, ${cus.name} , ${cus.age}
+        <a href="/customers?huhi=edit&id=${cus.id}">sua</a>,
+        <a href="/customers?huhi=delete&id=${cus.id}">xoa</a>
+    </h2>
 </c:forEach>
-
 </body>
 </html>
