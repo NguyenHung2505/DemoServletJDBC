@@ -14,6 +14,7 @@
 <body>
 <h1>day la danh sach</h1>
 <a href="/customers?huhi=create">tao moi</a>
+<a href="/customers?huhi=timtheoten">tim ten</a>
 <c:forEach var="cus" items="${dskh}">
     <h2>${cus.id}, ${cus.name} , ${cus.age}
         <a href="/customers?huhi=edit&id=${cus.id}">sua</a>,

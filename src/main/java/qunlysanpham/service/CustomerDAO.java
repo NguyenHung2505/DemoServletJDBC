@@ -30,11 +30,11 @@ public class CustomerDAO implements ICustomerDAO {
 
 
     @Override
-    public int findIndexByid(int id) {
+    public int findIndexById(int id) {
         int index = -1;
 
         for (int i = 0; i < this.customerList.size(); ++i) {
-            if (((Customer) this.customerList.get(i)).getId() == id) {
+            if (customerList.get(i).getId() == id) {
                 index = i;
             }
         }
@@ -88,8 +88,27 @@ public class CustomerDAO implements ICustomerDAO {
     }
 
     @Override
+    public List<Customer> findByName(String tim) {
+        List<Customer> customers = new ArrayList<>();
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from customer where name like ?");) {
+            preparedStatement.setString(1,"%"+ tim +"%");
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                int age = Integer.parseInt(rs.getString("age"));
+                customers.add(new Customer(id, name, age));
+            }
+        } catch (SQLException e) {
+        }
+        return customers;
+    }
+
+    @Override
     public boolean delete(int id) throws SQLException {
-        boolean  em;
+        boolean em = false;
         try(Connection connection = getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement("delete from customer where id=?;")){
             preparedStatement.setInt(1,id);
@@ -100,14 +119,15 @@ public class CustomerDAO implements ICustomerDAO {
 
     @Override
     public boolean update(Customer customer)throws SQLException {
-        boolean anh;
+        boolean anh = false;
         try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = getConnection().prepareStatement("update customer set name = ? , age = ?  where id = ?");) {
+             PreparedStatement preparedStatement = connection.prepareStatement("update customer set name = ? , age = ?  where id = ?");) {
             preparedStatement.setString(1, customer.getName());
             preparedStatement.setInt(2, customer.getAge());
             preparedStatement.setInt(3, customer.getId());
-             anh= preparedStatement.executeUpdate()>0;
+            anh = preparedStatement.executeUpdate() > 0;
         }
+        System.out.println(customer.toString());
         return anh;
     }
 }

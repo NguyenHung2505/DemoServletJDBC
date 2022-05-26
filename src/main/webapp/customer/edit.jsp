@@ -11,8 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-<form method="post">
-    <input type="text" name="id" value="${cansua.id}">
+<form action="/customers?huhi=edit&id=${cansua.id}" method="post">
+    <input type="number" name="id" value="${cansua.id}">
     <input type="text" name="name" value="${cansua.name}">
     <input type="number" name="age" value="${cansua.age}">
     <button>sua!</button>

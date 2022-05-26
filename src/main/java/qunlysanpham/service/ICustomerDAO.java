@@ -7,13 +7,15 @@ import java.util.List;
 
 public interface ICustomerDAO {
 
-    public int findIndexByid(int id);
+    public int findIndexById(int id);
 
     public  void add(Customer customer) throws SQLException;
 
     public Customer findById(int id);
 
     public List<Customer> findAll();
+
+    List<Customer> findByName(String name);
 
     public boolean delete(int id) throws SQLException;
 

@@ -24,14 +24,28 @@ public class CustomerServlet extends HttpServlet {
         switch (action){
             case "create":
                 showCreateForm(request,response);
+                break;
             case "edit":
                 showEditForm(request,response);
+                break;
             case "delete":
                 showdeleteForm(request,response);
+                break;
+            case "timtheoten":
+                showTimTheoTenForm(request,response);
                 break;
             default:
                 showList(request,response);
         }
+
+    }
+
+    private void showTimTheoTenForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/customer/timtheoten.jsp");
+        String name = request.getParameter("name");
+        List<Customer> customerList = customerDAO.findByName(name);
+        request.setAttribute("cantim",customerList);
+        requestDispatcher.forward(request,response);
 
     }
 
@@ -50,7 +64,7 @@ public class CustomerServlet extends HttpServlet {
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("customer/edit.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/customer/edit.jsp");
         int id = Integer.parseInt(request.getParameter("id"));
         Customer customer = customerDAO.findById(id);
         request.setAttribute("cansua",customer);
@@ -91,11 +105,15 @@ public class CustomerServlet extends HttpServlet {
                     e.printStackTrace();
                 }
                 break;
+            case "timtheoten":
+                showTimTheoTenForm (request,response);
+                break;
 
             default:
                 showList(request,response);
         }
     }
+
 
     private void edit(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -103,7 +121,7 @@ public class CustomerServlet extends HttpServlet {
         int age = Integer.parseInt(request.getParameter("age"));
         Customer customer=new Customer(id,name,age);
         customerDAO.update(customer);
-        response.sendRedirect("/customers");
+            response.sendRedirect("/customers");
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException {

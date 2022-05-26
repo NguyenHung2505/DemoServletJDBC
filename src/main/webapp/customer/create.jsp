@@ -12,9 +12,9 @@
 </head>
 <body>
 <form action="" method="post">
-    <input type="text" name="id">
+    <input type="number" name="id">
     <input type="text" name="name">
-    <input type="text" name="age">
+    <input type="number" name="age">
     <button>tao</button>
 </form>
 </body>
